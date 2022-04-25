@@ -1,7 +1,7 @@
 <?php
 require_once("core.php");
 
-$core = new Core("localhost", "root", "", "srp", "", "");
+$core = new Core("localhost", "root", "", "srp");
 
 if(!$core->ConnectToSql())
 {
@@ -18,6 +18,7 @@ $core->loadNavigationBar();
 $core->endBody();
 
 $core->loadScripts();
+
 $core->endHTML();
 
 ?>

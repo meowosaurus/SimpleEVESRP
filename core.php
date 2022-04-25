@@ -1,4 +1,6 @@
 <?php
+//require_once("config.php");
+include("config.php");
 
 class Core
 {
@@ -9,36 +11,38 @@ class Core
     private mysqli $sqlConnection;
     private mysqli_sql_exception $sqlError;
 
-    private string $websiteTitle = "Test SRP System";
-    private string $navigationTitle = "Test SRP System";
+    private string $websiteTitle;
+    private string $navigationTitle;
 
     // EVE Online related variables
     private int $allianceID = 0;
 
     /**
-     * Create the base core class for a website, needs an (My/maria db)sql connection.
+     * Create the base core class for a website, pulls data from config.php
      * You have to call Core::ConnectToSql to establish a connection!
-     * @param string $sqlHost Hostname of your database, for exmaple localhost:3306 or your docker container name
-     * @param string $sqlUser Name of your sql user
-     * @param string $sqlPassword Password for sql user
-     * @param string $sqlDatabase Database for sql, sometimes same as user
      */
-    public function __construct(string $sqlHost, string $sqlUser,
-                                string $sqlPassword, string $sqlDatabase)
+    public function __construct()
     {
-        $this->sqlHost = $sqlHost;
-        $this->sqlUser = $sqlUser;
-        $this->sqlPassword = $sqlPassword;
-        $this->sqlDatabase = $sqlDatabase;
+        /*
+         * Pulls variables from config.php
+         */
+        $this->sqlHost = $GLOBALS['sqlHost'];
+        $this->sqlUser = $GLOBALS['sqlUser'];
+        $this->sqlPassword = $GLOBALS['sqlPassword'];
+        $this->sqlDatabase = $GLOBALS['sqlDatabase'];
 
-        /* Use exception handling instead of posting error message on website
+        $this->websiteTitle = $GLOBALS['websiteTitle'];
+        $this->navigationTitle = $GLOBALS['navigationTitle'];
+
+        /*
+         * Use exception handling instead of posting error message on website
          * and give all errors
          */
         mysqli_report(MYSQLI_REPORT_STRICT | MYSQLI_REPORT_ALL);
     }
 
     /**
-     * Set (My/maria db)SQL login information and won't connect
+     * Set (My/maria db)SQL login information but won't connect
      * @param string $sqlHost Hostname of your database, for exmaple localhost:3306 or your docker container name
      * @param string $sqlUser Name of your sql user
      * @param string $sqlPassword Password for sql user
@@ -151,10 +155,9 @@ class Core
             <meta name="viewport" content="width=device-width, initial-scale=1">
 
             <!-- Bootstrap CSS -->
-            <link href="css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
             <!-- Customer CSS -->
             <!--<link rel="stylesheet" type="text/css" href="css/style.css">-->';
-
 
             // In case allianceID is not correct the icon will be replaced by a placeholder
             if($this->checkAllianceID())
@@ -162,11 +165,88 @@ class Core
             else
                 echo '<link rel="shortcut icon" sizes="16x16" href="https://zkillboard.com/img/eve-question.png" />';
 
-
-            echo '<title>'
-            . $this->websiteTitle .
-            '</title>
+            echo '
+            <title>'.
+                $this->websiteTitle
+            .'</title>
         </head>
+        ';
+    }
+
+    /**
+     * Starts body html tag
+     * @return void
+     */
+    function startBody(): void
+    {
+        echo '<body>';
+    }
+
+    /**
+     * Loads the main navigation bar
+     * @return void
+     */
+    function loadNavigationBar(): void
+    {
+        echo '
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark text-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="index.php">
+                    <img src="https://images.evetech.net/alliances/'. $this->allianceID .'/logo?size=32" alt="" width="30" height="30" class="d-inline-block align-text-top">
+                    '. $this->navigationTitle .'
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="index.php">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="payouts.php">View Payouts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="submit_lossmail.php">Submit Lossmail</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">My Lossmails</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Admin
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="#">Open lossmails</a></li>
+                                <li><a class="dropdown-item" href="#">Closed lossmails</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">Settings</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        ';
+    }
+
+    /**
+     * Ends body html tag
+     * @return void
+     */
+    function endBody(): void
+    {
+        echo '</body>';
+    }
+
+    /**
+     * Loads all JavaScript files
+     * @return void
+     */
+    function loadScripts(): void
+    {
+        echo '
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
         ';
     }
 

@@ -13,4 +13,10 @@ $sqlDatabase = "srp";
  */
 $allianceID = 1900696668;
 
+/*
+ * Website related varibales
+ */
+$websiteTitle = "Sneaky Nerds SRP";
+$navigationTitle = "Sneaky Nerds SRP";
+
 ?>

@@ -1,7 +1,7 @@
 <?php
 require_once("core.php");
 
-$core = new Core("localhost", "root", "", "srp", "", "");
+$core = new Core();
 
 if(!$core->ConnectToSql())
 {
