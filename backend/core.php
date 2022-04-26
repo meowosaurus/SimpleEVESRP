@@ -44,7 +44,48 @@ class Core
          * Use exception handling instead of posting error message on website
          * and give all errors
          */
-        mysqli_report(MYSQLI_REPORT_STRICT | MYSQLI_REPORT_ALL);
+        //mysqli_report(MYSQLI_REPORT_STRICT | MYSQLI_REPORT_ALL);
+        mysqli_report(MYSQLI_REPORT_STRICT);
+    }
+
+    /**
+     * Displays an error message inside a red error box, it adds the needed bootstrap library unless specified
+     * @param string $errorMessage String error message, will be displayed inside the box
+     * @param bool $includeBootstrap Bool if it should include bootstrap or not: default is TRUE
+     * @return void
+     */
+    public function ShowErrorAlert(string $errorMessage, bool $includeBootstrap = true): void
+    {
+        if(!$includeBootstrap)
+        {
+            echo '
+            <br />
+            <div class="container">
+                <div class="alert alert-danger" role="alert">
+                    <span class="badge bg-danger">Error!</span> '. $errorMessage .'
+                </div>
+            </div>
+            ';
+        }
+        else
+        {
+            $this->startHTML();
+            $this->loadHeader();
+            $this->startBody();
+            echo '
+            <br />
+            <div class="container">
+                <div class="alert alert-danger" role="alert">
+                    <h3><span class="badge bg-danger">Error!</span></h3>
+                    <br />
+                     '. $errorMessage .'
+                </div>
+            </div>
+            ';
+            $this->loadScripts();
+            $this->endBody();
+            $this->endHTML();
+        }
     }
 
     /**
@@ -74,10 +115,9 @@ class Core
         {
             $this->sqlConnection = new mysqli($this->sqlHost, $this->sqlUser, $this->sqlPassword, $this->sqlDatabase);
         }
-        catch(mysqli_sql_exception $e)
+        catch (mysqli_sql_exception $e)
         {
             $this->sqlError = $e;
-
             return false;
         }
         return true;
@@ -90,8 +130,17 @@ class Core
      */
     public function GetSQLError(): string
     {
-        return "SQL error in " . $this->sqlError->getFile() . " in line " .
-                $this->sqlError->getLine() . " -> " . $this->sqlError->getMessage();
+        return "<strong>SQL error</strong> in <strong>" . $this->sqlError->getFile() . "</strong> in line <strong>" .
+                $this->sqlError->getLine() . "</strong> -> <strong>" . $this->sqlError->getMessage() . "</strong>";
+    }
+
+    /**
+     * Returns the mysqli connection object, doesn't check if it's available
+     * @return mysqli Returns the mysqli object
+     */
+    public function GetSQLObject(): mysqli
+    {
+        return $this->sqlConnection;
     }
 
     /**
@@ -198,8 +247,8 @@ class Core
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark text-light">
             <div class="container-fluid">
                 <a class="navbar-brand" href="index.php">
-                    <img src="https://images.evetech.net/alliances/'. $this->allianceID .'/logo?size=32" alt="" width="30" height="30" class="d-inline-block align-text-top">
-                    '. $this->navigationTitle .'
+                    <img src="https://images.evetech.net/alliances/' . $this->allianceID .'/logo?size=32" alt="" width="30" height="30" class="d-inline-block align-text-top">
+                    '. $this->navigationTitle . '
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -213,10 +262,10 @@ class Core
                             <a class="nav-link" href="payouts.php">View Payouts</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="submit_lossmail.php">Submit Lossmail</a>
+                            <a class="nav-link" href="my_losses.php">My Lossmails</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="my_losses.php">My Lossmails</a>
+                            <a class="nav-link" href="submit_lossmail.php">Submit Lossmail</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

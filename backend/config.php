@@ -6,7 +6,7 @@
 $sqlHost = "localhost";
 $sqlUser = "root";
 $sqlPassword = "";
-$sqlDatabase = "srp";
+$sqlDatabase = "simplesrp";
 
 /*
  * EVE Online related variables

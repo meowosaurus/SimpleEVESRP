@@ -1,14 +1,13 @@
 <?php
-require_once("core.php");
+require_once("backend/core.php");
 
 $core = new Core();
 
 if(!$core->ConnectToSql())
 {
-    echo $core->GetSQLError();
+    $core->ShowErrorAlert($core->GetSQLError());
+    return;
 }
-
-$core->setAllianceID(1900696668);
 
 $core->startHTML();
 $core->loadHeader();
