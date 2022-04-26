@@ -12,6 +12,8 @@ $sqlDatabase = "srp";
  * EVE Online related variables
  */
 $allianceID = 1900696668;
+$corporationID = 0;
+$useAllianceIcon = true;
 
 /*
  * Website related varibales

@@ -16,6 +16,8 @@ class Core
 
     // EVE Online related variables
     private int $allianceID = 0;
+    private int $corporationID = 0;
+    private bool $useAllianceIcon = true;
 
     /**
      * Create the base core class for a website, pulls data from config.php
@@ -30,6 +32,10 @@ class Core
         $this->sqlUser = $GLOBALS['sqlUser'];
         $this->sqlPassword = $GLOBALS['sqlPassword'];
         $this->sqlDatabase = $GLOBALS['sqlDatabase'];
+
+        $this->allianceID = $GLOBALS['allianceID'];
+        $this->corporationID = $GLOBALS['corporationID'];
+        $this->useAllianceIcon = $GLOBALS['useAllianceIcon'];
 
         $this->websiteTitle = $GLOBALS['websiteTitle'];
         $this->navigationTitle = $GLOBALS['navigationTitle'];
@@ -210,7 +216,7 @@ class Core
                             <a class="nav-link" href="submit_lossmail.php">Submit Lossmail</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">My Lossmails</a>
+                            <a class="nav-link" href="my_losses.php">My Lossmails</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
